@@ -21,8 +21,8 @@ function getScoreOfCriteria (option: Option, criteriaId: string): number {
 }
 
 function getPriority(score: number): "High" | "Medium" | "Low"{
-  if (score >= 7) return "High"
-  if (score >= 4) return "Medium"
+  if (score >= 8) return "High"
+  if (score >= 6) return "Medium"
   return "Low"
 }
 
