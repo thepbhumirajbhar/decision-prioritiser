@@ -1,4 +1,4 @@
-import { Option, Decision_Input } from "./dummyData";
+import type { Option, Decision_Input } from "./dummyData";
 
 export type Option_Result = {
   optionId: string,
@@ -10,7 +10,8 @@ export type Option_Result = {
 
 export type Decision_Result = {
   decisionName: string,
-  result: Option_Result
+  topRecommendation: string,
+  results: Option_Result[]
 }
 
 function getScoreOfCriteria (option: Option, criteriaId: string): number {
@@ -32,7 +33,36 @@ function scoreOfOption (option:Option, criteria: Decision_Input['criteria'] ): n
 
   const totalWeight = criteria.reduce((sum, c)=> sum + c.weight, 0)
 
-  const weightedSum = criteria.reduce( )
+  const weightedSum = criteria.reduce((sum, criteriaItem)=>{
+    const score = getScoreOfCriteria(option, criteriaItem.id)
+    return sum + (score * criteriaItem.weight)
+  },0)
 
+  return Math.round((weightedSum/totalWeight)*10)/10
+
+}
+
+
+export function calculateResults(decision: Decision_Input): Decision_Result{
+  const scored = decision.options.map(option => ({
+    optionId :option.id,
+    optionName : option.name,
+    finalScore : scoreOfOption(option, decision.criteria),
+  }))
+
+  const sortedList = [...scored].sort((a,b)=> b.finalScore - a.finalScore)
+
+  const results: Option_Result[] = sortedList.map((item, index) => ({
+    ...item,
+    priority: getPriority(item.finalScore),
+    rank: index+1,
+  }))
+
+  return {
+    decisionName: decision.title,
+    topRecommendation: results[0].optionName,
+    results
+
+  }
 }
 
