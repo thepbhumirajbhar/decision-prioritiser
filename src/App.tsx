@@ -1,13 +1,17 @@
 import { Dummy_Decision } from "./data/dummyData"
-import OptionCard from "./components/OptionCard"
 import { calculateResults } from "./data/scoring"
+import { useState } from "react"
+import ResultsView from "./components/ResultsView"
 
 
 function App() {
+
+  const [appState] = useState("results")
   
   return (
-    <div className="bg-blue-500 text-white p-4">
+    <div>
       <h1>Decision Prioritiser</h1>
+      {appState === "results" && <ResultsView result={calculateResults(Dummy_Decision)} />}
     </div>
   )
 }
