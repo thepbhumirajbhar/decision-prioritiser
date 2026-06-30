@@ -26,7 +26,7 @@ const InputForm = () => {
     // early return condition
     if(options.length >= 5) return 
     const newOption = {
-      id: `opt-${options.length-1}`,
+      id: `opt-${options.length + 1}`,
       name: "",
       criteriaScores: criteria.map(c => ({ criteriaId: c.id, score: 5 }))
     }
@@ -39,7 +39,11 @@ const InputForm = () => {
     setOptions(options.filter(o => o.id !== optionId))
   }
 
-  
+  const handleOptionNameChange = (newName: string, optionId: string) => {
+    setOptions(options.map((option) => {
+      if(optionId == option.id ) return {...option, name: newName}
+      return option;
+  }))}
 
 
 
@@ -111,10 +115,21 @@ const InputForm = () => {
       </div>
 
 
-
-
-
-
+      {/* Options */}
+      <div>
+        <label>YOUR OPTIONS</label>
+        { options.map(option => (
+          <div key = {option.id}>
+            <input 
+              type="text"
+              placeholder = "Option name"
+              value = {option.name}
+              onChange = {(e) => handleOptionNameChange(e.target.value, option.id)} />
+              <button onClick={() => handleRemoveOption(option.id) }>Remove</button>
+          </div>
+        ))}
+        <button onClick={handleAddOption} disabled={options.length>=5}>Add Options</button>
+      </div>
 
 
     </div>
